@@ -39,6 +39,7 @@ thumbs.db
 .idea
 view/node_modules/
 server/node_modules/
+server/config/default.js
 jscoverage_lib/
 bower_components/
 view/dist/
