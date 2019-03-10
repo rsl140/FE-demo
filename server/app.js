@@ -6,6 +6,7 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
+const convert = require('koa-convert');
 
 var session = require('koa-session-minimal')
 var MysqlStore = require('koa-mysql-session')
@@ -51,11 +52,11 @@ app.use(
 )
 
 // middlewares
-app.use(bodyparser({
+app.use(convert(bodyparser({
   enableTypes:['json', 'form', 'text']
-}))
-app.use(json())
-app.use(logger())
+})))
+app.use(convert(json()))
+app.use(convert(logger()))
 app.use(require('koa-static')(__dirname + '/public'))
 
 app.use(views(__dirname + '/views', {
