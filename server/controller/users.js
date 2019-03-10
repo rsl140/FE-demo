@@ -50,11 +50,9 @@ exports.info = async (ctx, next) => {
     let payload
     if (token) {
       payload = await jwt.verify(token.split(' ')[1], config.secret) // 解密，获取payload
-      console.log(payload)
       const user = await mysqlModel.findUser(payload.data)
-      console.log(user)
       if (!user) {
-        ctx.body = ApiErrorNames.getErrorInfo(ApiErrorNames.INVALID_TOKEN)
+        ctx.body = ApiErrorNames.getErrorInfo(ApiErrorNames.USER_NOT_EXIST)
       } else {
         let data = {
           avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
@@ -65,10 +63,7 @@ exports.info = async (ctx, next) => {
         ctx.body = ApiErrorNames.getSuccessInfo(data)
       }
     } else {
-      ctx.body = {
-        message: '授权失败',
-        code: 401
-      }
+      ctx.body = ApiErrorNames.getErrorInfo(ApiErrorNames.INVALID_TOKEN)
     }
   } catch (error) {
     ctx.throw(500)
