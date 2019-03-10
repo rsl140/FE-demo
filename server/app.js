@@ -25,9 +25,10 @@ app.use(function(ctx, next) {
   return next().catch(err => {
     if (401 == err.status) {
       ctx.status = 401
-      ctx.body = {
-        error: err.originalError ? err.originalError.message : err.message
-      }
+      ctx.body = ApiErrorNames.getErrorInfo(ApiErrorNames.INVALID_TOKEN)
+      // ctx.body = {
+      //   // error: err.originalError ? err.originalError.message : err.message
+      // }
     } else {
       throw err
     }
