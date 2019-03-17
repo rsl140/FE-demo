@@ -1,7 +1,10 @@
 export default {
   route: {
     Dashboard: '首页',
-    Form: '日报'
+    Account: '日报',
+    AccountCount: '日报总结',
+    AccountTable: '日报表格',
+    Statistics: '统计'
   },
   navbar: {
     logOut: '退出登录',

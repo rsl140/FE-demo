@@ -17,7 +17,7 @@ import Layout from '../views/layout/Layout'
 * redirect: noredirect           if `redirect:noredirect` will no redirect in the breadcrumb
 * name:'router-name'             the name is used by <keep-alive> (must set!!!)
 * meta : {
-    title: 'title'               the name show in submenu and breadcrumb (recommend set)
+    title: 'title'               the name show in subMenu and breadcrumb (recommend set)
     icon: 'svg-name'             the icon show in the sidebar
     breadcrumb: false            if false, the item will hidden in breadcrumb(default is true)
   }
@@ -36,55 +36,44 @@ export const constantRouterMap = [
       path: 'dashboard',
       component: () => import('@/views/dashboard/index')
     }]
-  },
+  }
+]
 
-  // {
-  //   path: '/example',
-  //   component: Layout,
-  //   redirect: '/example/table',
-  //   name: 'Example',
-  //   meta: { title: 'Example', icon: 'example' },
-  //   children: [
-  //     {
-  //       path: 'table',
-  //       name: 'Table',
-  //       component: () => import('@/views/table/index'),
-  //       meta: { title: 'Table', icon: 'table' }
-  //     },
-  //     {
-  //       path: 'tree',
-  //       name: 'Tree',
-  //       component: () => import('@/views/tree/index'),
-  //       meta: { title: 'Tree', icon: 'tree' }
-  //     }
-  //   ]
-  // },
-
+export const asyncRouterMap = [
   {
-    path: '/form',
+    path: '/account',
     component: Layout,
+    redirect: '/account/index',
+    name: 'Account',
+    meta: { title: 'Account', icon: 'accountbook' },
     children: [
       {
         path: 'index',
-        name: 'Form',
+        name: 'AccountCount',
         component: () => import('@/views/account/index'),
-        meta: { title: 'Form', icon: 'form' }
+        meta: { title: 'AccountCount', icon: 'form' }
+      },
+      {
+        path: 'accounttable',
+        name: 'AccountTable',
+        component: () => import('@/views/account/table'),
+        meta: { title: 'AccountTable', icon: 'table', roles: ['SUPER'] }
       }
     ]
   },
 
-  // {
-  //   path: 'external-link',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-  //       meta: { title: 'External Link', icon: 'link' }
-  //     }
-  //   ]
-  // },
-
-  { path: '*', redirect: '/404', hidden: true }
+  {
+    path: '/statistics',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Statistics',
+        component: () => import('@/views/statistics/index'),
+        meta: { title: 'Statistics', icon: 'etsalesstatistics', roles: ['SUPER'] }
+      }
+    ]
+  }
 ]
 
 export default new Router({

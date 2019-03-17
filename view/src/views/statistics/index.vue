@@ -1,28 +1,16 @@
 <template>
-  <div class="dashboard-container">
-    <el-row :gutter="10">
-      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="mb10">
+  <div class="statistics-container">
+    <el-row>
+      <el-col class="mb10">
         <div>
-          <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <span>本周</span>
-            </div>
-            <div>
-              <charts :chart-data="Option"></charts>
-            </div>
-          </el-card>
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="mb10">
-        <div>
-          <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <span>本月</span>
-            </div>
-            <div>
-              <charts :chart-data="Option"></charts>
-            </div>
-          </el-card>
+          <el-select v-model="meetfreshSelect.name" class="w" placeholder="请选择">
+            <el-option
+              v-for="item in nameOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </div>
       </el-col>
     </el-row>
@@ -31,7 +19,19 @@
         <div>
           <el-card class="box-card">
             <div slot="header" class="clearfix">
-              <span>本年度</span>
+              <span>利润</span>
+            </div>
+            <div>
+              <charts :chart-data="Option"></charts>
+            </div>
+          </el-card>
+        </div>
+      </el-col>
+      <el-col :span="24" class="mb10">
+        <div>
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <span>销量</span>
             </div>
             <div>
               <charts :chart-data="Option"></charts>
@@ -47,13 +47,32 @@
 import Charts from '@/components/Charts'
 
 export default {
-  name: 'Dashboard',
+  name: 'Statistics',
   components: {
     Charts
   },
   data () {
     return {
-      Option: {}
+      Option: {},
+      meetfreshSelect: {
+        name: ''
+      },
+      nameOptions: [{
+        value: '资阳万达鲜芋仙',
+        label: '资阳万达鲜芋仙'
+      }, {
+        value: '泸州万达鲜芋仙',
+        label: '泸州万达鲜芋仙'
+      }, {
+        value: '眉山万达鲜芋仙',
+        label: '眉山万达鲜芋仙'
+      }, {
+        value: '遂宁万达鲜芋仙',
+        label: '遂宁万达鲜芋仙'
+      }, {
+        value: '雅安万达鲜芋仙',
+        label: '雅安万达鲜芋仙'
+      }]
     }
   },
   mounted () {
@@ -134,7 +153,7 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-.dashboard {
+.statistics {
   &-container {
     margin: 10px;
   }
