@@ -2,6 +2,7 @@ const mysqlModel = require('../lib/mysql') //引入数据库方法
 const jwt = require('jsonwebtoken')
 const config = require('../config/default.js')
 const ApiErrorNames = require('../error/ApiErrorNames.js')
+const moment = require('moment')
 
 /**
  * 普通登录
@@ -50,17 +51,30 @@ exports.info = async (ctx, next) => {
     let payload
     if (token) {
       payload = await jwt.verify(token.split(' ')[1], config.secret) // 解密，获取payload
-      const user = await mysqlModel.findUser(payload.data)
+      const user = await mysqlModel.findUserAndRole(payload.data)
       if (!user) {
         ctx.body = ApiErrorNames.getErrorInfo(ApiErrorNames.USER_NOT_EXIST)
       } else {
-        let data = {
-          avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-          name: user.user_id,
-            // roles: [user.user_admin === 0 ? 'admin' : '']
-          roles: ['admin']
-        }
-        ctx.body = ApiErrorNames.getSuccessInfo(data)
+        let cont = user.user_count + 1
+        let updateInfo = [
+          cont,
+          moment().format('YYYY-MM-DD HH:mm:ss'),
+          user.id
+        ]
+        await mysqlModel
+        .UpdataUserInfo(updateInfo)
+        .then(res => {
+          let data = {
+            avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+            name: user.user_id,
+              // roles: [user.user_admin === 0 ? 'admin' : '']
+            roles: [user.role_name]
+          }
+          ctx.body = ApiErrorNames.getSuccessInfo(data)
+        })
+        .catch(err => {
+          ctx.body = ApiErrorNames.getErrorInfo(ApiErrorNames.DATA_IS_WRONG)
+        })
       }
     } else {
       ctx.body = ApiErrorNames.getErrorInfo(ApiErrorNames.INVALID_TOKEN)

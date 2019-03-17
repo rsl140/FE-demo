@@ -1,5 +1,6 @@
 const mysql = require('mysql')
 const config = require('../config/default')
+const createTables = require('../config/createTables.js')
 
 var pool = mysql.createPool({
   host: config.database.HOST,
@@ -27,48 +28,35 @@ let query = function(sql, values) {
   })
 }
 
-users = `create table if not exists user_gutai(
-id int PRIMARY KEY NOT NULL AUTO_INCREMENT COMMENT '(自增长)',
-user_id varchar(100) not null COMMENT '账号',
-user_name varchar(100) not null  COMMENT '用户名',
-user_pwd varchar(100) not null  COMMENT '密码',
-user_admin int not null  COMMENT '权限(0->admin,1)',
-user_creatdata timestamp NOT NULL DEFAULT NOW()  COMMENT '创建日期'
-)engine=innodb charset=utf8;`
-
-librarys = `create table if not exists librarys_gutai(
-id int PRIMARY KEY NOT NULL AUTO_INCREMENT COMMENT '(自增长)',
-library_id varchar(100) not null COMMENT '编号',
-library_name varchar(100)  COMMENT '别名',
-library_moneyin double  COMMENT '进价',
-library_count int COMMENT '件数',
-library_money double COMMENT '定价',
-library_creatdata timestamp NOT NULL DEFAULT NOW()  COMMENT '创建日期'
-)engine=innodb charset=utf8;`
-
-accounts = `create table if not exists accounts_gutai(
-id int PRIMARY KEY NOT NULL AUTO_INCREMENT COMMENT '(自增长)',
-accounts_id varchar(100) not null COMMENT '编号',
-accounts_count int COMMENT '件数',
-accounts_getmoney double  COMMENT '出货价',
-accounts_paytype int  COMMENT '付款方式',
-accounts_commit varchar(100)  COMMENT '备注',
-accounts_data timestamp NOT NULL DEFAULT NOW()  COMMENT '日期'
-)engine=innodb charset=utf8;`
-
 let createTable = function(sql) {
   return query(sql, [])
 }
 
 // 建表
-createTable(users)
-createTable(librarys)
-createTable(accounts)
+// createTable(createTables.users)
+// createTable(createTables.role)
+// createTable(createTables.permission)
+// createTable(createTables.userRole)
+// createTable(createTables.rolePermission)
 
 // 查询用户是否存在
 let findUser = async function(id) {
   let _sql = `
-        SELECT * FROM user_gutai where user_id="${id}" limit 1
+        SELECT * FROM user_info where user_id="${id}" limit 1;
+    `
+  let result = await query(_sql)
+
+  if (Array.isArray(result) && result.length > 0) {
+    result = result[0]
+  } else {
+    result = null
+  }
+  return result
+}
+// 查询用户以及用户角色
+let findUserAndRole = async function(id) {
+  let _sql = `
+      SELECT u.*,r.role_name FROM user_info u,user_role ur,role_info r where u.id=(SELECT id FROM user_info where user_id="${id}" limit 1) and ur.user_id=u.id and r.id=ur.user_id limit 1;
     `
   let result = await query(_sql)
 
@@ -80,66 +68,62 @@ let findUser = async function(id) {
   return result
 }
 
-// 新增库存
-let addStock = async function(value) {
+// 更新用户登录次数和登录时间
+let UpdataUserInfo = async function(value) {
   let _sql =
-    'insert into librarys_gutai set library_id =?, library_name =?, library_moneyin =?, library_count =?, library_money =?, library_creatdata =?;'
+    'UPDATE user_info SET user_count = ?, user_login_time = ? WHERE id = ?;'
   return query(_sql, value)
 }
 
-// 删除库存
-let delStock = async function(value) {
-  let _sql = 'DELETE FROM librarys_gutai WHERE id =?;'
-  return query(_sql, value)
-}
+//  // 读取门店名称
+// let getShopName = async function() {
+//   let _sql =
+//     'SELECT s.id, s.shop_name AS NAME FROM shop_info s;'
+//   return query(_sql)
+// }
+// // 获取所有门店的日报信息
+// let getShopAndAccount = async function(value) {
+//   let _sql =
+//     // 'SELECT a.*,s.shop_name FROM account_info a, shop_info s WHERE s.id = a.shop_id;'
+//     'SELECT a.*, s.shop_name, us.user_name AS creat_name,ui.user_name AS change_name FROM account_info a, shop_info s, user_info us, user_info ui WHERE ui.id = a.change_id and s.id = a.shop_id AND a.creat_id = us.id;'
+//   return query(_sql, value)
+// }
 
-// 获取库存列表
-let getStockList = async function() {
-  let _sql = 'SELECT * FROM librarys_gutai;'
-  return query(_sql)
-}
+// // 根据门店ID获取日报信息(获取某店铺所有日报)
+// let getShopAndAccountWithId = async function(value) {
+//   let _sql = ''
+//   if (value) {
+//     _sql =
+//     'SELECT a.*, s.shop_name, us.user_name AS creat_name, ui.user_name AS change_name FROM account_info a, shop_info s, user_info us, user_info ui WHERE s.id = ? AND ui.id = a.change_id AND s.id = a.shop_id AND a.creat_id = us.id;'
+//   } else {
+//     _sql =
+//     'SELECT a.*, s.shop_name, us.user_name AS creat_name,ui.user_name AS change_name FROM account_info a, shop_info s, user_info us, user_info ui WHERE ui.id = a.change_id and s.id = a.shop_id AND a.creat_id = us.id;'
+//   }
 
-// 搜索库存
-let searchStockList = async function(value) {
-  let _sql = 'SELECT * FROM librarys_gutai where library_id LIKE ?;'
-  return query(_sql, value)
-}
+//   return query(_sql, value)
+// }
+// // 新增日报
+// let addAccount = async function(value) {
+//   let _sql =
+//     'insert into account_info VALUES ( NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), NULL, ?, ? );'
+//   return query(_sql, value)
+// }
 
-// 新增库存
-let addAccount = async function(value) {
-  let _sql =
-    'insert into accounts_gutai set accounts_id =?, accounts_count =?, accounts_getmoney =?, accounts_paytype =?, accounts_commit =?, accounts_data =?;'
-  return query(_sql, value)
-}
-
-// 删除库存
-let delAccount = async function(value) {
-  let _sql = 'DELETE FROM accounts_gutai WHERE id =?;'
-  return query(_sql, value)
-}
-
-// 获取库存列表
-let getAccountList = async function() {
-  let _sql = 'SELECT * FROM accounts_gutai;'
-  return query(_sql)
-}
-
-// 搜索库存
-let searchAccountList = async function(value) {
-  let _sql = 'SELECT * FROM accounts_gutai where accounts_id LIKE ?;'
-  return query(_sql, value)
-}
+// // 删除日报
+// let delAccount = async function(value) {
+//   let _sql = 'DELETE FROM account_info WHERE id = ?;'
+//   return query(_sql, value)
+// }
 
 module.exports = {
   //暴露方法
-  findUser,
   createTable,
-  addStock,
-  delStock,
-  getStockList,
-  searchStockList,
+  findUser,
+  findUserAndRole,
+  UpdataUserInfo,
+  getShopAndAccount,
+  getShopAndAccountWithId,
+  getShopName,
   addAccount,
-  delAccount,
-  getAccountList,
-  searchAccountList
+  delAccount
 }
