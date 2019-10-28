@@ -1,4 +1,4 @@
 build/*.js
-config/*.js
 src/assets
-src/components/Table/index.vue
+public
+dist

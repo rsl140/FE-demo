@@ -1,142 +1,32 @@
 <template>
   <div class="dashboard-container">
-    <el-row :gutter="10">
-      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="mb10">
-        <div>
-          <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <span>本周</span>
-            </div>
-            <div>
-              <charts :chart-data="Option"></charts>
-            </div>
-          </el-card>
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="mb10">
-        <div>
-          <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <span>本月</span>
-            </div>
-            <div>
-              <charts :chart-data="Option"></charts>
-            </div>
-          </el-card>
-        </div>
-      </el-col>
-    </el-row>
-    <el-row :gutter="10">
-      <el-col :span="24" class="mb10">
-        <div>
-          <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <span>本年度</span>
-            </div>
-            <div>
-              <charts :chart-data="Option"></charts>
-            </div>
-          </el-card>
-        </div>
-      </el-col>
-    </el-row>
+    <div class="dashboard-text">name: {{ name }}</div>
+    <div class="dashboard-text">roles: <span v-for="role in roles" :key="role">{{ role }}</span></div>
   </div>
 </template>
 
 <script>
-import Charts from '@/components/Charts'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Dashboard',
-  components: {
-    Charts
-  },
-  data () {
-    return {
-      Option: {}
-    }
-  },
-  mounted () {
-    this.getList()
-  },
-  methods: {
-    getList () {
-      this.Option = {
-        xAxis: {
-          data: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'],
-          boundaryGap: false,
-          axisTick: {
-            show: false
-          }
-        },
-        grid: {
-          left: 10,
-          right: 10,
-          bottom: 20,
-          top: 30,
-          containLabel: true
-        },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'cross'
-          },
-          padding: [5, 10]
-        },
-        yAxis: {
-          axisTick: {
-            show: false
-          }
-        },
-        legend: {
-          data: ['实际', '预期']
-        },
-        series: [{
-          name: '实际', itemStyle: {
-            normal: {
-              color: '#FF005A',
-              lineStyle: {
-                color: '#FF005A',
-                width: 2
-              }
-            }
-          },
-          smooth: true,
-          type: 'line',
-          data: [58, 1212, 222, 555, 65, 322, 87],
-          animationDuration: 2800,
-          animationEasing: 'cubicInOut'
-        },
-        {
-          name: '预期',
-          smooth: true,
-          type: 'line',
-          itemStyle: {
-            normal: {
-              color: '#3888fa',
-              lineStyle: {
-                color: '#3888fa',
-                width: 2
-              },
-              areaStyle: {
-                color: '#f3f8ff'
-              }
-            }
-          },
-          data: [28, 321, 42, 12, 42, 12, 827],
-          animationDuration: 2800,
-          animationEasing: 'quadraticOut'
-        }]
-      }
-    }
+  computed: {
+    ...mapGetters([
+      'name',
+      'roles'
+    ])
   }
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style lang="scss" scoped>
 .dashboard {
   &-container {
-    margin: 10px;
+    margin: 30px;
+  }
+  &-text {
+    font-size: 30px;
+    line-height: 46px;
   }
 }
 </style>
