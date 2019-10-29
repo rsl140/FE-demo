@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils'
-import Hamburger from '@/components/Hamburger/index.vue'
-describe('Hamburger.vue', () => {
+import Hamburger from '@/components/hamburger/index.vue'
+describe('hamburger.vue', () => {
   it('toggle click', () => {
     const wrapper = shallowMount(Hamburger)
     const mockFn = jest.fn()

@@ -1,7 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils'
 import VueRouter from 'vue-router'
 import ElementUI from 'element-ui'
-import Breadcrumb from '@/components/Breadcrumb/index.vue'
+import Breadcrumb from '@/components/breadcrumb/index.vue'
 
 const localVue = createLocalVue()
 localVue.use(VueRouter)
@@ -50,7 +50,7 @@ const router = new VueRouter({
   routes
 })
 
-describe('Breadcrumb.vue', () => {
+describe('breadcrumb.vue', () => {
   const wrapper = mount(Breadcrumb, {
     localVue,
     router
