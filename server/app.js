@@ -78,6 +78,7 @@ app.use(cors())
 // routes
 // app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
+// demo样例
 app.use(account.routes(), account.allowedMethods())
 
 // error-handling

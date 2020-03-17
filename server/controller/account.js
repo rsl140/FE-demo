@@ -1,4 +1,4 @@
-const mysqlModel = require('../lib/mysql') //引入数据库方法
+const mysqlModel = require('../lib/account') //引入数据库方法
 const jwt = require('jsonwebtoken')
 const config = require('../config/default.js')
 const moment = require('moment')
