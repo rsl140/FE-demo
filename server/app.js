@@ -1,4 +1,5 @@
 const Koa = require('koa')
+const koaSwagger = require('koa2-swagger-ui')
 const jwt = require('koa-jwt')
 const app = new Koa()
 const views = require('koa-views')
@@ -6,19 +7,29 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
-const convert = require('koa-convert');
+const convert = require('koa-convert')
+
 
 var session = require('koa-session-minimal')
 var MysqlStore = require('koa-mysql-session')
 var config = require('./config/default.js')
 var cors = require('koa2-cors')
 
-// const index = require('./routes/index')
 const users = require('./routes/users')
 const account = require('./routes/account')
+// swagger
+const swagger = require('./util/swagger')
+app.use(swagger.routes(), swagger.allowedMethods())
 
 // error handler
 onerror(app)
+// 配置Swagger-ui
+app.use(koaSwagger({
+  routePrefix: '/swagger', // host at /swagger instead of default /docs
+  swaggerOptions: {
+    url: '/swagger.json', // example path to json
+  },
+}))
 
 // 配置jwt错误返回
 app.use(function(ctx, next) {
