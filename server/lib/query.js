@@ -1,7 +1,6 @@
 // 执行SQL语句方法
 const mysql = require('mysql')
 const config = require('../config/default')
-const createTables = require('../config/createTables.js')
 
 var pool = mysql.createPool({
   host: config.database.HOST,
@@ -29,19 +28,7 @@ let query = function(sql, values) {
   })
 }
 
-let createTable = function(sql) {
-  return query(sql, [])
-}
-
-// 建表
-// createTable(createTables.users)
-// createTable(createTables.role)
-// createTable(createTables.permission)
-// createTable(createTables.userRole)
-// createTable(createTables.rolePermission)
-
 module.exports = {
   //暴露方法
-  createTable,
   query
 }

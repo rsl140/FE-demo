@@ -1,7 +1,7 @@
 /**
  * API错误名称
  */
-var ApiErrorNames = {};
+let ApiErrorNames = {};
 
 ApiErrorNames.UNKNOW_ERROR = "UNKNOW_ERROR";
 ApiErrorNames.SUCCESS = "SUCCESS";
@@ -18,6 +18,8 @@ ApiErrorNames.USER_LOGIN_ERROR = 'USER_LOGIN_ERROR';
 ApiErrorNames.USER_ACCOUNT_FORBIDDEN = 'USER_ACCOUNT_FORBIDDEN';
 ApiErrorNames.USER_NOT_EXIST = 'USER_NOT_EXIST';
 ApiErrorNames.USER_HAS_EXISTED = 'USER_HAS_EXISTED';
+ApiErrorNames.USER_LOGIN_TIMEOUT = 'USER_LOGIN_TIMEOUT';
+
 
 /* 业务错误：30001-39999 */
 ApiErrorNames.SPECIFIED_QUESTIONED_USER_NOT_EXIST = 'SPECIFIED_QUESTIONED_USER_NOT_EXIST';
@@ -60,6 +62,7 @@ error_map.set(ApiErrorNames.USER_LOGIN_ERROR, { code: 20002, message: '账号不
 error_map.set(ApiErrorNames.USER_ACCOUNT_FORBIDDEN, { code: 20003, message: '账号已被禁用' });
 error_map.set(ApiErrorNames.USER_NOT_EXIST, { code: 20004, message: '用户不存在' });
 error_map.set(ApiErrorNames.USER_HAS_EXISTED, { code: 20005, message: '用户已存在' });
+error_map.set(ApiErrorNames.USER_LOGIN_TIMEOUT, { code: 20006, message: '登录超时' });
 /* 业务错误：30001-39999 */
 error_map.set(ApiErrorNames.SPECIFIED_QUESTIONED_USER_NOT_EXIST, { code: 30001, message: '某业务出现问题' });
 /* 系统错误：40001-49999 */
@@ -79,10 +82,11 @@ error_map.set(ApiErrorNames.INTERFACE_EXCEED_LOAD, { code: 60006, message: '接�
 error_map.set(ApiErrorNames.PERMISSION_NO_ACCESS, { code: 70001, message: '无访问权限' });
 error_map.set(ApiErrorNames.INVALID_TOKEN, { code: 70002, message: '无效token' });
 
+
 //根据错误名称获取错误信息
 ApiErrorNames.getErrorInfo = (error_name) => {
 
-    var error_info;
+    let error_info;
 
     if (error_name) {
         error_info = error_map.get(error_name);
@@ -100,7 +104,7 @@ ApiErrorNames.getErrorInfo = (error_name) => {
 //返回正确信息
 ApiErrorNames.getSuccessInfo = (data) => {
 
-    var success_info;
+    let success_info;
     let name = 'SUCCESS';
     success_info = error_map.get(name);
     if (data) {
@@ -108,6 +112,18 @@ ApiErrorNames.getSuccessInfo = (data) => {
     }
 
     return success_info;
+}
+
+ApiErrorNames.errorCatch = (error, ctx) => {
+  switch (error.name) {
+    case 'TokenExpiredError':
+      ctx.body = ApiErrorNames.getErrorInfo(ApiErrorNames.USER_LOGIN_TIMEOUT)
+      break;
+
+    default:
+      ctx.throw(500)
+      break;
+  }
 }
 
 module.exports = ApiErrorNames;

@@ -18,7 +18,7 @@ const messages = {
     ...elementZhLocale
   }
 }
-export function getLanguage () {
+export function getLanguage() {
   const chooseLanguage = Cookies.get('language')
   if (chooseLanguage) return chooseLanguage
 
@@ -30,11 +30,11 @@ export function getLanguage () {
       return locale
     }
   }
-  return 'zh'
+  return 'en'
 }
 const i18n = new VueI18n({
   // set locale
-  // options: en | zh
+  // options: en | zh | es
   locale: getLanguage(),
   // set locale messages
   messages

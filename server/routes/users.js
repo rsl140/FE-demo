@@ -6,13 +6,23 @@ const userControl = require('../controller/users') //引入逻辑
  * definitions:
  *   user:
  *     properties:
- *       name:
+ *       nick_name:
  *         type: string
  *       breed:
  *         type: string
  *       age:
  *         type: integer
  *       sex:
+ *         type: integer
+ */
+/**
+ * @swagger
+ * definitions:
+ *   login:
+ *     properties:
+ *       username:
+ *         type: string
+ *       password:
  *         type: string
  */
 router.get('/', async (ctx, next) => {
@@ -72,7 +82,7 @@ router.post('/user/logout', userControl.logout)
  *         in: body
  *         required: true
  *         schema:
- *           $ref: '#/definitions/user'
+ *           $ref: '#/definitions/login'
  *     responses:
  *       200:
  *         description: Successfully created

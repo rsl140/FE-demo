@@ -2,7 +2,7 @@ const Koa = require('koa')
 const koaSwagger = require('koa2-swagger-ui')
 const jwt = require('koa-jwt')
 const app = new Koa()
-const views = require('koa-views')
+// const views = require('koa-views')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
@@ -16,7 +16,6 @@ var config = require('./config/default.js')
 var cors = require('koa2-cors')
 
 const users = require('./routes/users')
-const account = require('./routes/account')
 // swagger
 const swagger = require('./util/swagger')
 app.use(swagger.routes(), swagger.allowedMethods())
@@ -34,12 +33,10 @@ app.use(koaSwagger({
 // 配置jwt错误返回
 app.use(function(ctx, next) {
   return next().catch(err => {
+    console.log(err);
     if (401 == err.status) {
       ctx.status = 401
       ctx.body = ApiErrorNames.getErrorInfo(ApiErrorNames.INVALID_TOKEN)
-      // ctx.body = {
-      //   // error: err.originalError ? err.originalError.message : err.message
-      // }
     } else {
       throw err
     }
@@ -71,9 +68,9 @@ app.use(convert(json()))
 app.use(convert(logger()))
 app.use(require('koa-static')(__dirname + '/public'))
 
-app.use(views(__dirname + '/views', {
-  extension: 'pug'
-}))
+// app.use(views(__dirname + '/views', {
+//   extension: 'pug'
+// }))
 
 // logger
 app.use(async (ctx, next) => {
@@ -89,9 +86,6 @@ app.use(cors())
 // routes
 // app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
-// demo样例
-app.use(account.routes(), account.allowedMethods())
-
 // error-handling
 app.on('error', (err, ctx) => {
   console.error('server error', err, ctx)

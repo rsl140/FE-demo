@@ -8,21 +8,27 @@
         <tags-view v-if="needTagsView" />
       </div>
       <app-main />
+      <right-panel v-if="showSettings">
+        <settings />
+      </right-panel>
     </div>
   </div>
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain, TagsView } from './components'
+import RightPanel from '@/components/RightPanel'
+import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
 
 export default {
   name: 'Layout',
   components: {
-    Navbar,
-    Sidebar,
     AppMain,
+    Navbar,
+    RightPanel,
+    Settings,
+    Sidebar,
     TagsView
   },
   mixins: [ResizeMixin],
@@ -34,16 +40,7 @@ export default {
       needTagsView: state => state.settings.tagsView,
       fixedHeader: state => state.settings.fixedHeader
     }),
-    sidebar () {
-      return this.$store.state.app.sidebar
-    },
-    device () {
-      return this.$store.state.app.device
-    },
-    fixedHeader () {
-      return this.$store.state.settings.fixedHeader
-    },
-    classObj () {
+    classObj() {
       return {
         hideSidebar: !this.sidebar.opened,
         openSidebar: this.sidebar.opened,
@@ -53,7 +50,7 @@ export default {
     }
   },
   methods: {
-    handleClickOutside () {
+    handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
     }
   }
