@@ -12,29 +12,29 @@
     "debug": "^2.6.3",
     "jsonwebtoken": "^8.5.0",
     "koa": "^2.2.0",
-    "koa-bodyparser": "^3.2.0",
+    "koa-bodyparser": "^4.3.0",
     "koa-convert": "^1.2.0",
     "koa-json": "^2.0.2",
     "koa-jwt": "^3.5.1",
     "koa-logger": "^2.0.1",
     "koa-mysql-session": "0.0.2",
-    "koa-onerror": "^1.2.1",
+    "koa-onerror": "^4.1.0",
     "koa-router": "^7.1.1",
     "koa-session-minimal": "^3.0.4",
     "koa-static": "^3.0.0",
     "koa-views": "^5.2.1",
     "koa2-cors": "^2.0.6",
     "koa2-swagger-ui": "^2.16.0",
-    "md5": "^2.2.1",
-    "moment": "^2.24.0",
-    "mysql": "^2.16.0",
-    "nanoid": "^3.1.20",
-    "pug": "^2.0.0-rc.1",
+    "md5": "^2.3.0",
+    "moment": "^2.29.1",
+    "mysql": "^2.18.1",
+    "nanoid": "^3.1.25",
+    "pug": "^3.0.2",
     "save": "^2.3.3",
     "swagger-jsdoc": "^3.5.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "nodemon": "^1.8.1"
+    "nodemon": "^2.0.12"
   }
 }
