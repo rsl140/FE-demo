@@ -2,6 +2,18 @@
 - 个人前端常用模版 基于(vue-admin)修改而来
 - The personal front-end common template is modified based on the (vue-admin)
 
+# 2021.9.14 更新日志
+- 增加注册功能
+- 数据库用户操作增加了一个IP字段
+- 更新cors设置
+- 服务器端登录逻辑修改
+
+# 2021.9.14 Update log
+- add register
+- database add IP type
+- update cors setting
+- login logic change with server
+
 # 2021.1.15 更新日志
 - sql模板数据移动至 `server->config->data.sql`
 - 修改了数据库结构，实现了基本的登录操作
