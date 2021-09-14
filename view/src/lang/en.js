@@ -18,11 +18,21 @@ export default {
   login: {
     title: 'Login Form',
     logIn: 'Login',
+    register: 'register',
     username: 'Username',
     password: 'Password',
     any: 'any',
     thirdparty: 'Or connect with',
     thirdpartyTips: 'Can not be simulated on local, so please combine you own business simulation! ! !'
+  },
+  register: {
+    logIn: 'logIn',
+    title: 'title',
+    email: 'email',
+    register: 'register',
+    nickname: 'nickname',
+    password: 'password',
+    password2: 'password2'
   },
   documentation: {
     documentation: 'Documentation',

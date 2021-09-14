@@ -19,15 +19,26 @@ const users = require('./routes/users')
 // swagger
 const swagger = require('./util/swagger')
 app.use(swagger.routes(), swagger.allowedMethods())
-
-// error handler
-onerror(app)
 // 配置Swagger-ui
 app.use(koaSwagger({
   routePrefix: '/swagger', // host at /swagger instead of default /docs
   swaggerOptions: {
     url: '/swagger.json', // example path to json
   },
+}))
+
+// error handler
+onerror(app)
+// cors
+app.use(cors({
+  origin: function(ctx) { //设置允许来自指定域名请求
+      // return 'http://localhost:8888'; //只允许http://localhost:8888这个域名的请求
+      return '*'
+  },
+  maxAge: 5, //指定本次预检请求的有效期，单位为秒。
+  // credentials: true, //是否允许发送Cookie
+  allowMethods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'], //设置所允许的HTTP请求方法
+  allowHeaders: ['Content-Type', 'Authorization', 'Accept'], //设置服务器支持的所有头信息字段
 }))
 
 // 配置jwt错误返回
@@ -43,6 +54,14 @@ app.use(function(ctx, next) {
   })
 })
 
+// Middleware below this line is only reached if JWT token is valid
+
+app.use(
+  jwt({ secret: config.secret, passthrough: true }).unless({
+    path: [/\/register/, /\/user\/login/]
+  })
+)
+
 // Unprotected middleware
 app.use(function(ctx, next) {
   if (ctx.url.match(/^\/public/)) {
@@ -51,14 +70,6 @@ app.use(function(ctx, next) {
     return next()
   }
 })
-
-// Middleware below this line is only reached if JWT token is valid
-
-app.use(
-  jwt({ secret: config.secret, passthrough: true }).unless({
-    path: [/\/register/, /\/user\/login/]
-  })
-)
 
 // middlewares
 app.use(convert(bodyparser({
@@ -79,9 +90,6 @@ app.use(async (ctx, next) => {
   const ms = new Date() - start
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
-
-// cors
-app.use(cors())
 
 // routes
 // app.use(index.routes(), index.allowedMethods())

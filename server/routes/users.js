@@ -25,6 +25,20 @@ const userControl = require('../controller/users') //引入逻辑
  *       password:
  *         type: string
  */
+/**
+ * @swagger
+ * definitions:
+ *   register:
+ *     properties:
+ *       email:
+ *         type: string
+ *       nickname:
+ *         type: string
+  *       password:
+  *         type: string
+  *       password2:
+  *         type: string
+ */
 router.get('/', async (ctx, next) => {
   'use strict'
   ctx.redirect('/user/login')
@@ -48,7 +62,7 @@ router.get('/', async (ctx, next) => {
 router.get('/user/info', userControl.info)
 /**
  * @swagger
- * /api/logout:
+ * /user/logout:
  *   post:
  *     tags:
  *       - logout
@@ -69,7 +83,7 @@ router.get('/user/info', userControl.info)
 router.post('/user/logout', userControl.logout)
 /**
  * @swagger
- * /api/login:
+ * /user/login:
  *   post:
  *     tags:
  *       - login
@@ -88,6 +102,27 @@ router.post('/user/logout', userControl.logout)
  *         description: Successfully created
  */
 router.post('/user/login', userControl.login)
+/**
+ * @swagger
+ * /user/register:
+ *   post:
+ *     tags:
+ *       - register
+ *     description: Creates a new register
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: register
+ *         description: register object
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/register'
+ *     responses:
+ *       200:
+ *         description: Successfully created
+ */
+router.post('/user/register', userControl.register)
 
 module.exports = router
 //将页面暴露出去

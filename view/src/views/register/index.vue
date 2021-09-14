@@ -1,25 +1,45 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
+    <el-form ref="registerForm" :model="registerForm" :rules="registerRules" class="login-form" autocomplete="on" label-position="left">
 
       <div class="title-container">
         <h3 class="title">
-          {{ $t('login.title') }}
+          {{ $t('register.title') }}
         </h3>
         <lang-select class="set-language" />
       </div>
+      <el-form-item
+        prop="email"
+        :rules="[
+          { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+        ]"
+      >
+        <span class="svg-container">
+          <svg-icon icon-class="email" />
+        </span>
+        <el-input
+          ref="email"
+          v-model="registerForm.email"
+          :placeholder="$t('register.email')"
+          name="email"
+          type="text"
+          tabindex="1"
+          autocomplete="on"
+        />
+      </el-form-item>
 
-      <el-form-item prop="username">
+      <el-form-item prop="nickname">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="username"
-          v-model="loginForm.username"
-          :placeholder="$t('login.username')"
-          name="username"
+          ref="nickname"
+          v-model="registerForm.nickname"
+          :placeholder="$t('register.nickname')"
+          name="nickname"
           type="text"
-          tabindex="1"
+          tabindex="2"
           autocomplete="on"
         />
       </el-form-item>
@@ -32,15 +52,14 @@
           <el-input
             :key="passwordType"
             ref="password"
-            v-model="loginForm.password"
+            v-model="registerForm.password"
             :type="passwordType"
-            :placeholder="$t('login.password')"
+            :placeholder="$t('register.password')"
             name="password"
-            tabindex="2"
+            tabindex="3"
             autocomplete="on"
             @keyup.native="checkCapslock"
             @blur="capsTooltip = false"
-            @keyup.enter.native="handleLogin"
           />
           <span class="show-pwd" @click="showPwd">
             <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
@@ -48,71 +67,91 @@
         </el-form-item>
       </el-tooltip>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">
-        {{ $t('login.logIn') }}
+      <el-tooltip v-model="capsTooltip2" content="Caps lock is On" placement="right" manual>
+        <el-form-item prop="password2">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input
+            :key="password2Type"
+            ref="password2"
+            v-model="registerForm.password2"
+            :type="password2Type"
+            :placeholder="$t('register.password2')"
+            name="password2"
+            tabindex="4"
+            autocomplete="on"
+            @keyup.native="checkCapslock2"
+            @blur="capsTooltip2 = false"
+            @keyup.enter.native="handleRegister"
+          />
+          <span class="show-pwd" @click="showPwd2">
+            <svg-icon :icon-class="password2Type === 'password' ? 'eye' : 'eye-open'" />
+          </span>
+        </el-form-item>
+      </el-tooltip>
+
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:10px;" @click.native.prevent="handleRegister">
+        {{ $t('register.register') }}
       </el-button>
       <div style="width:100%;text-align: right;">
-        <el-button style="margin-left:0;" type="text" @click="$router.push('/register')">{{ $t('login.register') }}</el-button>
-      </div>
-
-      <div style="position:relative">
-        <!-- <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
-          {{ $t('login.thirdparty') }}
-        </el-button> -->
+        <el-button style="margin-left:0;" type="text" @click="$router.push('/login')">{{ $t('register.logIn') }}</el-button>
       </div>
     </el-form>
-
-    <!-- <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog">
-      {{ $t('login.thirdpartyTips') }}
-      <br>
-      <br>
-      <br>
-      <social-sign />
-    </el-dialog> -->
   </div>
 </template>
 
 <script>
-import { validEmail } from '@/utils/validate'
 import LangSelect from '@/components/LangSelect'
-// import SocialSign from './components/SocialSignin'
 
 export default {
   name: 'Login',
   components: {
     LangSelect
-    // SocialSign
   },
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validEmail(value)) {
-        callback(new Error('Please enter the correct user name'))
+    const validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'))
       } else {
+        if (this.registerForm.password2 !== '') {
+          this.$refs.registerForm.validateField('password2')
+        }
         callback()
       }
     }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+    const validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.registerForm.password) {
+        callback(new Error('两次输入密码不一致!'))
       } else {
         callback()
       }
     }
     return {
-      loginForm: {
-        username: '1001@qq.com',
-        password: '123456'
+      registerForm: {
+        email: '',
+        nickname: '',
+        password: '',
+        password2: ''
       },
-      loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+      registerRules: {
+        nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
+        password: [{ required: true, trigger: 'blur', validator: validatePass }],
+        password2: [{ required: true, trigger: 'blur', validator: validatePass2 }]
       },
       passwordType: 'password',
+      password2Type: 'password',
       capsTooltip: false,
+      capsTooltip2: false,
       loading: false,
       showDialog: false,
       redirect: undefined,
-      otherQuery: {}
+      otherQuery: {},
+      form: {
+        email: ''
+      }
     }
   },
   watch: {
@@ -127,13 +166,12 @@ export default {
       immediate: true
     }
   },
-  created() {
-    // window.addEventListener('storage', this.afterQRScan)
-  },
   mounted() {
-    if (this.loginForm.username === '') {
-      this.$refs.username.focus()
-    } else if (this.loginForm.password === '') {
+    if (this.registerForm.email === '') {
+      this.$refs.email.focus()
+    } else if (this.registerForm.nickname === '') {
+      this.$refs.nickname.focus()
+    } else if (this.registerForm.password === '') {
       this.$refs.password.focus()
     }
   },
@@ -145,6 +183,10 @@ export default {
       const { key } = e
       this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
     },
+    checkCapslock2(e) {
+      const { key } = e
+      this.capsTooltip2 = key && key.length === 1 && (key >= 'A' && key <= 'Z')
+    },
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -155,20 +197,29 @@ export default {
         this.$refs.password.focus()
       })
     },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+    showPwd2() {
+      if (this.password2Type === 'password') {
+        this.password2Type = ''
+      } else {
+        this.password2Type = 'password'
+      }
+      this.$nextTick(() => {
+        this.$refs.password2.focus()
+      })
+    },
+    handleRegister() {
+      this.$refs.registerForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm)
+          this.$store.dispatch('user/register', this.registerForm)
             .then(() => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              this.$router.push('/login')
               this.loading = false
             })
             .catch(() => {
               this.loading = false
             })
         } else {
-          console.log('error submit!!')
           return false
         }
       })
@@ -181,24 +232,6 @@ export default {
         return acc
       }, {})
     }
-    // afterQRScan() {
-    //   if (e.key === 'x-admin-oauth-code') {
-    //     const code = getQueryObject(e.newValue)
-    //     const codeMap = {
-    //       wechat: 'code',
-    //       tencent: 'code'
-    //     }
-    //     const type = codeMap[this.auth_type]
-    //     const codeName = code[type]
-    //     if (codeName) {
-    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-    //         this.$router.push({ path: this.redirect || '/' })
-    //       })
-    //     } else {
-    //       alert('第三方登录失败')
-    //     }
-    //   }
-    // }
   }
 }
 </script>
